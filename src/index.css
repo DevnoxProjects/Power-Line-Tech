@@ -1,0 +1,51 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  --color-brand-dark: #0f172a;
+  --color-brand-navy: #0f1e36;
+  --color-brand-slate: #475569;
+  
+  /* Brand specific colors as requested */
+  --color-plt-purple: #4A3B80;     /* Main PLT Branding text */
+  --color-plt-green: #3B8E42;      /* Orbital lines & Power Line Tech text */
+  --color-plt-violet: #714B9D;     /* Energy bubble details */
+  --color-plt-skyblue: #8ECDF5;    /* Accents */
+
+  /* Map standard interactive brand colors to corporate purple/violet */
+  --color-brand-gold: #4A3B80;
+  --color-brand-gold-hover: #714B9D;
+}
+
+@layer base {
+  body {
+    background-color: #ffffff;
+    color: #1e293b;
+    font-family: var(--font-sans);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+  }
+}
+
+/* Custom premium scrollbar styling suitable for light mode */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #4A3B80;
+}

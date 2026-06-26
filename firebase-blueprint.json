@@ -1,0 +1,71 @@
+{
+  "entities": {
+    "inquiry": {
+      "title": "Inquiry",
+      "description": "Client inquiry submitted from the contact form or logged by admin.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Full name of the inquirer"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "Contact email address"
+        },
+        "phone": {
+          "type": "string",
+          "description": "Contact phone number"
+        },
+        "requirements": {
+          "type": "string",
+          "description": "Detailed requirements or specification requests"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["New", "Contacted", "Resolved"],
+          "description": "Current processing status of the inquiry"
+        },
+        "adminNotes": {
+          "type": "string",
+          "description": "Administrative notes added during review"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The exact time when the inquiry was logged"
+        }
+      },
+      "required": ["name", "email", "status", "timestamp"]
+    },
+    "admin": {
+      "title": "Admin",
+      "description": "Administrative account metadata mapping to enable email change permission retention.",
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "Current active email of the administrator"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Last timestamp of security update"
+        }
+      },
+      "required": ["email", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "inquiries/{inquiryId}": {
+      "schema": "inquiry",
+      "description": "Client inquiries submitted through the contact or specification form."
+    },
+    "admins/{uid}": {
+      "schema": "admin",
+      "description": "Registered administrative UIDs with persistent privileges."
+    }
+  }
+}

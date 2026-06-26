@@ -1,0 +1,8 @@
+{
+  "name": "Remix: Power Line Tech (EPLT)",
+  "description": "Industrial electrical engineering and substation manufacturing corporate platform, featuring a dynamic product matrix, active power factor calculator, inquiry integration, and an administrative control panel.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

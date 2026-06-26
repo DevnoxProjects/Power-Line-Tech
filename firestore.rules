@@ -1,0 +1,75 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Global Safety Net: Default Deny All
+    match /{document=**} {
+      allow read, write: if false;
+    }
+    
+    // Global Authentication and Identity Helpers
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.token.email == "office.devnoxit@gmail.com" ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+    
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+    
+    function incoming() {
+      return request.resource.data;
+    }
+    
+    function existing() {
+      return resource.data;
+    }
+    
+    // Strict schema and size validation to guard against bloating attacks
+    function isValidInquiry(data) {
+      return data.keys().hasAll(['name', 'email', 'status', 'timestamp'])
+        && data.name is string && data.name.size() > 0 && data.name.size() <= 200
+        && data.email is string && data.email.size() > 0 && data.email.size() <= 200
+        && data.status is string && data.status in ['New', 'Contacted', 'Resolved']
+        && data.timestamp is string && data.timestamp.size() <= 100
+        && (!('phone' in data) || (data.phone is string && data.phone.size() <= 50))
+        && (!('requirements' in data) || (data.requirements is string && data.requirements.size() <= 5000))
+        && (!('adminNotes' in data) || (data.adminNotes is string && data.adminNotes.size() <= 10000));
+    }
+
+    // Inquiries Collection: Public submission, Administrative management
+    match /inquiries/{inquiryId} {
+      // Administrative reads & queries
+      allow get, list: if isAdmin();
+      
+      // Anyone is allowed to submit a new inquiry (e.g., from the Contact/Specification forms)
+      allow create: if isValidId(inquiryId) && isValidInquiry(incoming());
+      
+      // Only administrators can edit inquiries or administrative notes
+      allow update: if isAdmin() && isValidId(inquiryId) && isValidInquiry(incoming());
+      
+      // Only administrators can prune/delete logs
+      allow delete: if isAdmin() && isValidId(inquiryId);
+    }
+
+    // Admins Collection: Enables admin designation persistence even after changing auth email
+    match /admins/{uid} {
+      allow read: if isSignedIn() && (request.auth.uid == uid || isAdmin());
+      allow write: if isSignedIn() && (request.auth.uid == uid || isAdmin());
+    }
+    
+    // Allow connection and health check lookups
+    match /settings/content {
+      allow read: if true;
+    }
+    match /test/connection {
+      allow read: if true;
+    }
+  }
+}
